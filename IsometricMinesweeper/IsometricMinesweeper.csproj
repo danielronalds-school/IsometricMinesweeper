@@ -86,5 +86,11 @@
   <ItemGroup>
     <None Include="Resources\updated_isometric_tile.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GrassTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TileBase.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
