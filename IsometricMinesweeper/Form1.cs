@@ -18,6 +18,7 @@ namespace IsometricMinesweeper
 
         IsometricGrid3D isometricGrid;
         IsometricGrid2D playerGrid;
+        IsometricGrid2D flagGrid;
 
         List<Renderer2D> renderers = new List<Renderer2D>();
         List<ColliderComponent> colliders = new List<ColliderComponent>();
@@ -26,18 +27,25 @@ namespace IsometricMinesweeper
 
         bool collidersVisible = false;
 
+        FlagMap flagMap;
+
         public Form1()
         {
             InitializeComponent();
 
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, Canvas, new object[] { true });
 
-            isometricGrid = new IsometricGrid3D(315, 200, 9);
+            isometricGrid = new IsometricGrid3D(315, 200, 9, 3);
 
             renderers.Add(new Renderer2D(isometricGrid.to2D(0), TileMapTemplates.FilledGrid(isometricGrid.to2D(0)), Properties.Resources.TileBase));
             renderers.Add(new Renderer2D(isometricGrid.to2D(0), TileMapTemplates.FilledGrid(isometricGrid.to2D(0)), Properties.Resources.GrassTop));
 
             playerGrid = isometricGrid.to2D(1);
+            flagGrid = isometricGrid.to2D(1);
+
+            flagMap = new FlagMap(flagGrid);
+
+            renderers.Add(flagRenderer());
 
             colliders = Collision.placeColliders(playerGrid, TileMapTemplates.FilledGrid(playerGrid));
         }
@@ -45,6 +53,8 @@ namespace IsometricMinesweeper
         private void Canvas_Paint(object sender, PaintEventArgs e)
         {
             g = e.Graphics;
+
+            renderers[2] = flagRenderer();
 
             foreach (Renderer2D renderer in renderers)
             {
@@ -60,6 +70,13 @@ namespace IsometricMinesweeper
             }
         }
 
+        private Renderer2D flagRenderer()
+        {
+            flagMap.updateMap();
+
+            return new Renderer2D(flagGrid, flagMap.Map, Properties.Resources.Flag);
+        }
+
         private void Canvas_Click(object sender, EventArgs e)
         {
             Rectangle mouseRec;
@@ -68,21 +85,41 @@ namespace IsometricMinesweeper
 
             GridIndex tileIndex = calculateTile(mouseRec);
 
-            if(tileIndex != null)
+            MouseEventArgs me = (MouseEventArgs)e;
+
+            if (tileIndex != null)
             {
-                Console.WriteLine($"x: {tileIndex.X} y: {tileIndex.Y}");
+                string flagValue = flagMap.grid[tileIndex.X, tileIndex.Y];
 
                 RenderComponent tile = findTile(tileIndex);
 
                 if (tile != null)
                 {
-                    if (tile.Visible)
+                    // Deletes tile
+                    if (me.Button == MouseButtons.Left)
                     {
-                        tile.Visible = false;
+                        Console.WriteLine($"x: {tileIndex.X} y: {tileIndex.Y}");
+
+                        if (tile.Visible && flagValue == flagMap.Map.VoidCharacter)
+                        {
+                            tile.Visible = false;
+                        }
+                        //else
+                        //{
+                        //    tile.Visible = true;
+                        //}
                     }
-                    else
+
+                    // Place flag
+                    if (me.Button == MouseButtons.Right)
                     {
-                        tile.Visible = true;
+                        if (flagValue == "0" && tile.Visible)
+                        {
+                            flagMap.grid[tileIndex.X, tileIndex.Y] = "f";
+                        } else
+                        {
+                            flagMap.grid[tileIndex.X, tileIndex.Y] = "0";
+                        }
                     }
                 }
             }

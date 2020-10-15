@@ -63,6 +63,16 @@ namespace IsometricMinesweeper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Flag {
+            get {
+                object obj = ResourceManager.GetObject("Flag", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GrassTop {
             get {
                 object obj = ResourceManager.GetObject("GrassTop", resourceCulture);
@@ -76,16 +86,6 @@ namespace IsometricMinesweeper.Properties {
         internal static System.Drawing.Bitmap TileBase {
             get {
                 object obj = ResourceManager.GetObject("TileBase", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap updated_isometric_tile {
-            get {
-                object obj = ResourceManager.GetObject("updated_isometric_tile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
