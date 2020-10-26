@@ -23,6 +23,8 @@ namespace IsometricMinesweeper
         List<Renderer2D> renderers = new List<Renderer2D>();
         List<ColliderComponent> colliders = new List<ColliderComponent>();
 
+        MineManager mineManager;
+
         Point MouseLocation;
 
         bool collidersVisible = false;
@@ -37,7 +39,10 @@ namespace IsometricMinesweeper
 
             isometricGrid = new IsometricGrid3D(315, 200, 9, 3);
 
+            mineManager = new MineManager(isometricGrid, 10);
+
             renderers.Add(new Renderer2D(isometricGrid.to2D(0), TileMapTemplates.FilledGrid(isometricGrid.to2D(0)), Properties.Resources.TileBase));
+            renderers.Add(new Renderer2D(isometricGrid.to2D(0), mineManager.mineMap, Properties.Resources.Mine));
             renderers.Add(new Renderer2D(isometricGrid.to2D(0), TileMapTemplates.FilledGrid(isometricGrid.to2D(0)), Properties.Resources.GrassTop));
 
             playerGrid = isometricGrid.to2D(1);
@@ -54,7 +59,7 @@ namespace IsometricMinesweeper
         {
             g = e.Graphics;
 
-            renderers[2] = flagRenderer();
+            renderers[3] = flagRenderer();
 
             foreach (Renderer2D renderer in renderers)
             {
@@ -104,7 +109,7 @@ namespace IsometricMinesweeper
                         {
                             tile.Visible = false;
                         }
-                        //else
+                        //else // Allows the player to hide tiles again
                         //{
                         //    tile.Visible = true;
                         //}
@@ -153,7 +158,7 @@ namespace IsometricMinesweeper
         {
             GridIndex renderIndex;
 
-            foreach(RenderComponent renderComponent in renderers[1].renderComponents)
+            foreach(RenderComponent renderComponent in renderers[2].renderComponents)
             {
                 renderIndex = IsometricUtilities.findGridID(isometricGrid.to2D(0), renderComponent.renderRect);
 
